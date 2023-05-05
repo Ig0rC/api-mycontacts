@@ -1,4 +1,5 @@
 const ContactsRepository = require('../repositories/ContactsRepository');
+const isValidUUID = require('../utils/isValidUUID');
 
 class ContactController {
   async index(request, response) {
@@ -11,6 +12,10 @@ class ContactController {
 
   async show(request, response) {
     const { id } = request.params;
+
+    if (!isValidUUID(id)) {
+      return response.status(404).json('invalid user id');
+    }
 
     const contact = await ContactsRepository.findById(id);
 
@@ -28,6 +33,10 @@ class ContactController {
       name, email, phone, category_id,
     } = request.body;
 
+    if (category_id && !isValidUUID(category_id)) {
+      return response.status(404).json('invalid category id');
+    }
+
     if (!name || !email || !phone) {
       return response.status(404).json({ error: 'Name, email, phone and category is required' });
     }
@@ -41,7 +50,10 @@ class ContactController {
     }
 
     const contact = await ContactsRepository.store({
-      name, email, phone, category_id,
+      name,
+      email,
+      phone,
+      category_id: category_id || null,
     });
     return response.json(contact);
   }
@@ -49,9 +61,21 @@ class ContactController {
   async updated(request, response) {
     const { id } = request.params;
 
+    if (!isValidUUID(id)) {
+      return response.status(404).json('invalid category id');
+    }
+
     const {
       phone, email, name, category_id,
     } = request.body;
+
+    if (!name || !email || !phone) {
+      return response.status(404).json({ error: 'Name, email, phone and category is required' });
+    }
+
+    if (category_id && !isValidUUID(category_id)) {
+      return response.status(404).json('invalid category id');
+    }
 
     const contactExists = await ContactsRepository.findById(id);
 
@@ -66,7 +90,10 @@ class ContactController {
     }
 
     const contact = await ContactsRepository.update(id, {
-      name, email, phone, category_id,
+      name,
+      email,
+      phone,
+      category_id: category_id || null,
     });
 
     return response.json(contact);
@@ -74,6 +101,10 @@ class ContactController {
 
   async delete(request, response) {
     const { id } = request.params;
+
+    if (!isValidUUID(id)) {
+      return response.status(404).json('invalid category id');
+    }
 
     await ContactsRepository.delete(id);
 

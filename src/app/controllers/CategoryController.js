@@ -21,7 +21,7 @@ class CategoryController {
 
   async teste(request, response) {
     const values = await CategoriesRepository.teste();
-    console.log(values);
+
     return response.json(values);
   }
 }
