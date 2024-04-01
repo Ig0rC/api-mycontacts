@@ -1,7 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('./middlewares/cors');
 const errorHandler = require('./middlewares/errorHandler');
-require('dotenv').config();
 
 require('express-async-errors');
 
@@ -17,4 +17,4 @@ app.use(routes);
 
 app.use(errorHandler);
 
-app.listen(process.env.PORT_APP, () => console.log('connected'));
+exports.app = app;
